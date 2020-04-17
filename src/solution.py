@@ -5,14 +5,19 @@ import time
 
 
 class Solution:
-    def __init__(self, read_path, write_path):
+    def __init__(self, read_path: str, write_path: str):
         self.read_path = read_path
         self.write_path = write_path
+
+        # Define some intermediate variables
         self.raw = {}
         self.mid = {}
         self.final = None
 
     def pipeline(self):
+        """
+        This is the only method that users are supposed to run.
+        """
         self._read_csv()
         self._initialize()
         self._process()
@@ -20,6 +25,10 @@ class Solution:
         self._write_csv()
 
     def _read_csv(self):
+        """
+        Read csv file, filter out unrelated columns and transfer the data into dictionary, stored in self.raw.
+        Schema: {Complaint ID: [Product, Date received, Company]}
+        """
         with open(self.read_path, 'r', encoding='UTF-8') as file:
             csv_file = csv.DictReader(file)
             keys = ['Complaint ID', 'Product', 'Date received', 'Company']
@@ -34,6 +43,10 @@ class Solution:
 
     # TODO: Could use HEAP data structure here to gain more efficiency
     def _initialize(self):
+        """
+        Get primary key (Product, Year), set it as dictionary key to generate new dictionary, stored in self.mid.
+        Schema: {(Product, Year): [Complaints_number, Complaints_company_number, dict(company, counts)]}
+        """
         if self.raw == {}:
             raise SyntaxError("Invalid Syntax: self.raw is not initialized.")
 
@@ -57,6 +70,10 @@ class Solution:
                     self.mid[pk][2][record[2]] += 1
 
     def _process(self):
+        """
+        Focus on the dict(company, counts) in self.mid, get max value and calculate percentage, updated in self.mid.
+        Schema: {(Product, Year): [Complaints_number, Complaints_company_number, max_complaints_percent_by_company]}
+        """
         if self.mid == {}:
             raise SyntaxError("Invalid Syntax: self.mid is not initialized.")
         items = list(self.mid.items())
@@ -65,12 +82,19 @@ class Solution:
             self.mid[pk][-1] = max_percent
 
     def _sort(self):
+        """
+        Reconstruct self.mid into list, sort it by primary key, stored in self.final.
+        Schema: [[Product, Year, Complaints_number, Complaints_company_number, max_complaints_percent_by_company]]
+        """
         if self.mid == {}:
             raise SyntaxError("Invalid Syntax: self.mid is not initialized.")
         self.final = [[*pk, *target] for pk, target in self.mid.items()]
         self.final.sort(key=lambda x: (x[0], x[1]))
 
     def _write_csv(self):
+        """
+        Write self.final into csv file.
+        """
         with open(self.write_path, mode='w', newline='') as csv_file:
             csv_writer = csv.writer(csv_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
             for row in self.final:
