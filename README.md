@@ -1,7 +1,7 @@
 # InsightDataEngineerChallenge
 
 ## Summary
-My solution's logic is very simple and clear, which can be find at `./src/solution.py`. 
+My solution's logic is very simple and clear, which can be find at `./src/consumer_complaints.py`. 
 The key point is to get the primary key of output table, which is (Product, Year).
 Since third party packages are not allowed here, I adopt `Dictionary` data structure to deal with the data manipulation.
 Other explanations can be found in the code docstrings and comments.
