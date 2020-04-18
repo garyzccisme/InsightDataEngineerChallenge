@@ -104,7 +104,7 @@ class Solution:
 if __name__ == "__main__":
     start = time.time()
     print("Start on {}.".format(datetime.fromtimestamp(start).strftime('%c')))
-    solution = Solution(*sys.argv[1:])
+    solution = Solution(str(sys.argv[1]), str(sys.argv[2]))
     solution.pipeline()
     end = time.time()
     print("Finish on {}, totally {} s.".format(datetime.fromtimestamp(end).strftime('%c'), round(end - start, 2)))
